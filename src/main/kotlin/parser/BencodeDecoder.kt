@@ -4,7 +4,7 @@ class BencodeDecoder(private val bytes: ByteArray) {
     var iterator = 0
 
     fun getNext(): Any {
-        return when(val currentChar = bytes[iterator].toInt().toChar()) {
+        return when(bytes[iterator].toInt().toChar()) {
             // String
             in '0'..'9' -> {
                 decodeByteString()
@@ -25,8 +25,7 @@ class BencodeDecoder(private val bytes: ByteArray) {
             }
             // Something is wrong
             else -> {
-                iterator++
-                println("No solution found for ($currentChar) at index: $iterator")
+                throw IllegalArgumentException("File is malformed and cannot be processed")
             }
         }
     }
