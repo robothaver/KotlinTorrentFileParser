@@ -1,5 +1,6 @@
 package parser
 
+import model.Torrent
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -15,6 +16,18 @@ class TorrentFileParser {
             null
         }
     }
+
+    fun parseFile(path: Path): Torrent? {
+        val bytes = openFile(path)
+        return if (bytes != null) {
+            bencodeDecoder = BencodeDecoder(bytes, convertToObject = true)
+            bencodeDecoder.getNext() // Start parsing the file
+            bencodeDecoder.getTorrent()
+        } else {
+            null
+        }
+    }
+
 
     private fun openFile(path: Path): ByteArray? {
         return try {

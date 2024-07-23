@@ -5,14 +5,11 @@ import kotlin.system.measureTimeMillis
 
 fun main() {
     val torrentFileParser = TorrentFileParser()
-    val torrentFile = Path("Path to torrent file here!")
-
-    var data: Map<String, Any>
+    val torrentFilePath = Path("Path to torrent file here")
 
     val time = measureTimeMillis {
-        data = torrentFileParser.parseFileToMap(torrentFile)!!
+        val torrent = torrentFileParser.parseFile(torrentFilePath)
+        println(torrent!!.files)
     }
-
-    println("Parsing finished in ${time}ms !")
-    println(data)
+    println("Parsing finished in $time ms")
 }
