@@ -19,7 +19,7 @@ A kotlin app that allows you to read the contents of a torrent file.
         val isSingleFile: Boolean,
         val totalSize: Long,
         val files: MutableList<File>,
-        val name: String?,
+        val name: String,
         val source: String,
         val isPrivate: Boolean,
         val pieceLength: Long,
