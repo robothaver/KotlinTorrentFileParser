@@ -17,8 +17,8 @@ class TorrentFileBuilder {
     private var encoding: String? = null
 
     // Info
-    private var isSingleFile: Boolean = false
-    private var length: Long = 0L
+    private var isSingleFile: Boolean = true
+    private var totalSize: Long = 0L
     private val files: MutableList<File> = mutableListOf()
     private var name: String = ""
     private var source: String = ""
@@ -61,6 +61,12 @@ class TorrentFileBuilder {
             }
             "name" -> {
                 name = value as String
+                if (files.isNotEmpty()) {
+                    isSingleFile = false
+                    addParentNameToPaths()
+                } else {
+                    files.add(File(totalSize, name))
+                }
             }
 
             "piece length" -> {
@@ -80,19 +86,27 @@ class TorrentFileBuilder {
             }
 
             "length" -> {
-                if (files.isEmpty()) {
-                    length = value as Long
-                    isSingleFile = true
-                } else {
-                    length = 0L
-                    isSingleFile = false
-                }
+                totalSize += value as Long
             }
 
             "path" -> {
-                files.add(File(lastValue as Long, value as List<String>))
+                files.add(File(lastValue as Long, joinFileToPath(value as List<String>)))
             }
         }
+    }
+
+    /**
+     Adds the name of the torrent to every path's start
+     */
+    private fun addParentNameToPaths() {
+        for (i in 0..files.lastIndex) {
+            val path = files[i].path
+            files[i] = files[i].copy(path = "$name/$path")
+        }
+    }
+
+    private fun joinFileToPath(pieces: List<String>): String {
+        return pieces.joinToString("/")
     }
 
     fun createTorrent(): Torrent {
@@ -105,7 +119,7 @@ class TorrentFileBuilder {
             creationDate,
             encoding,
             isSingleFile,
-            length,
+            totalSize,
             files,
             name,
             source,

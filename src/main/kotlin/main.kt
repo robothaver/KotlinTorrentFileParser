@@ -10,6 +10,8 @@ fun main() {
     val time = measureTimeMillis {
         val torrent = torrentFileParser.parseFile(torrentFilePath)
         println(torrent!!.files)
+        println("Is single file: ${torrent.isSingleFile}")
+        println("Total size in bytes: ${torrent.totalSize}")
     }
     println("Parsing finished in $time ms")
 }
